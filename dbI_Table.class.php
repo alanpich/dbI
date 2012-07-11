@@ -95,7 +95,22 @@ public function get( $filters = false ){
 // Insert
 //-----------------------------------------------------------------------------------------------------------------------------------------
 public function insert($values){
+		 if(!is_array($values)){ return; };
 		 
+		 $keys = array();
+		 $vals = array();
+		 
+		 foreach($values as $key => $val){
+		 	$keys[] = '`'.$key.'`';
+		 	$vals[] = $this->fields[$key]->prepare($val);
+		 };
+		 
+		 $keyStr = implode(',',$keys);
+		 $valStr = implode(',',$vals);
+		 
+		 $sql = 'INSERT INTO `'.$this->name.'` ('.$keyStr.') VALUES ('.$valStr.')';
+		 
+		 return $this->query($sql);
 	}//
 	
 	
