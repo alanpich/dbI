@@ -9,7 +9,8 @@ private $typemap = array(
 				'tinyint' 	=> "INT",
 				'bigint' 	=> "INT",
 				'varchar' 	=> "STR",
-				'text' 		=> "STR"
+				'text' 		=> "STR",
+                'timestamp' => 'INT'
 			);
 
 function __construct( $DB, $tableName ){
@@ -127,9 +128,10 @@ public function update($values = array(), $where = array()){
 		$sets = array();
 
 		foreach($values as $key => $val){
-			$sets[] = '`'.$key.'`'.'='. $this->fields[$key]->prepare($val);
+ 			$sets[] = '`'.$key.'`'.'='. $this->fields[$key]->prepare($val);
 		};
 
+        var_dump($sets);
 
 		$wheres = array();
 		if(is_array($where)){
@@ -141,16 +143,11 @@ public function update($values = array(), $where = array()){
 		};
 		$whereClause = count($wheres)<1? '' : 'WHERE '.implode(' AND ',$wheres);
 
-		$sql = 'UPDATE `'.$this->name.'` '.$whereClause;
+		$sql = 'UPDATE `'.$this->name.'` SET '.implode(',',$sets).$whereClause;
 
-		if($q = $this->query($sql)){
-			return true;
-		} else {
-			return $q;
-		};
-		
-
-		
+		$this->query($sql);
+        
+        	
 	}//
 
 
