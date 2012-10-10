@@ -26,7 +26,7 @@ public function sort( $field, $DIR = "ASC" ){
 		foreach($this->rows as $row){
 			$keys[] = $row[$field];
 		};
-		array_multisort($keys,&$this->rows);
+		array_multisort($keys,$this->rows);
 		
 		// Reverse sort order if desc
 		if($DIR=='DESC'){ $this->rows = array_reverse($this->rows);	};

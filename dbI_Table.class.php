@@ -83,7 +83,7 @@ public function get( $filters = false ){
 		$res = $this->DB->query($sql);
 		
 		// Return useful object
-		$R = new dbI_Result($res,$sql);
+		$R = new dbI_Result($res,$sql,$this);
 		// Return response object
 		return $R;	
 	}//
@@ -109,10 +109,51 @@ public function insert($values){
 		 $valStr = implode(',',$vals);
 		 
 		 $sql = 'INSERT INTO `'.$this->name.'` ('.$keyStr.') VALUES ('.$valStr.')';
-		 
-		 return $this->query($sql);
+		 $q = $this->query($sql);
+		 $ID = $this->DB->insert_id;
+		 if(is_numeric($ID) && $ID > 0){
+			return $ID;
+		};
+		return false;
 	}//
 	
+
+
+// Update
+//-----------------------------------------------------------------------------------------------------------------------------------------
+public function update($values = array(), $where = array()){
+		if(!is_array($values)){return;};
+
+		$sets = array();
+
+		foreach($values as $key => $val){
+			$sets[] = '`'.$key.'`'.'='. $this->fields[$key]->prepare($val);
+		};
+
+
+		$wheres = array();
+		if(is_array($where)){
+			foreach($where as $key => $val){
+				$wheres[] = '`'.$key.'`'.'='. $this->fields[$key]->prepare($val);
+			};
+		} else {
+			$wheres[] = $this->primary.'='.$this->fields[$this->primary]->prepare($where);
+		};
+		$whereClause = count($wheres)<1? '' : 'WHERE '.implode(' AND ',$wheres);
+
+		$sql = 'UPDATE `'.$this->name.'` '.$whereClause;
+
+		if($q = $this->query($sql)){
+			return true;
+		} else {
+			return $q;
+		};
+		
+
+		
+	}//
+
+
 	
 	
 // Delete
