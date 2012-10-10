@@ -131,8 +131,6 @@ public function update($values = array(), $where = array()){
  			$sets[] = '`'.$key.'`'.'='. $this->fields[$key]->prepare($val);
 		};
 
-        var_dump($sets);
-
 		$wheres = array();
 		if(is_array($where)){
 			foreach($where as $key => $val){
